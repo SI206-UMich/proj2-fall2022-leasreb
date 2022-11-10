@@ -32,19 +32,19 @@ def get_listings_from_search_results(html_file):
 
     soup = BeautifulSoup(fileData, 'html.parser')
 
-    title_tags = soup.find_all("div", class_= "t1jojoys dir dir-ltr")    
+    title_tags = soup.find_all("div", class_= "t1jojoys dir dir-ltr")      #getting list of titles
     title_list = []
     for tag in title_tags:
          title_list.append(tag.text.strip())
     
-    cost_tags = soup.find_all("div", class_= "phbjkf1 dir dir-ltr")
+    cost_tags = soup.find_all("div", class_= "phbjkf1 dir dir-ltr")        #getting list of prices
     cost_list = []
     for cost in cost_tags:
         cost = cost.text.strip()
         price = re.findall('^\$([0-9]+)',cost)
         cost_list.extend(price)
     
-    id_list = []
+    id_list = []                                                           #getting list of ids 
     listings = soup('a')
     for listing in listings:
         id = (listing.get('aria-labelledby'))
@@ -52,7 +52,7 @@ def get_listings_from_search_results(html_file):
             id_num = re.findall('[0-9]+', id)
             id_list.extend(id_num)
     
-    final_list=[]
+    final_list=[]                                                           #creating tuples
     for i in range(len(title_tags)):
         tup=(title_list[i],int(cost_list[i]),id_list[i])
         final_list.append(tup)
@@ -86,7 +86,50 @@ def get_listing_information(listing_id):
         number of bedrooms
     )
     """
-    file = 'html_files/listing_' + listing_id + '.html'
+    listing_file = 'html_files/listing_' + listing_id + '.html'
+
+    f = open(listing_file, 'r')
+    fileData = f.read()
+    f.close()
+
+    soup = BeautifulSoup(fileData, 'html.parser')
+
+    lst = soup.find('div',class_="_1k8vduze" )
+    pol_num = lst.find('span', class_="ll4r2nl")
+    pol_num = pol_num.text.strip()
+
+    if pol_num == "exepmt":
+        pol_num = "Exempt"
+    
+    if pol_num == "pending":
+        pol_num = "Pending"
+    
+  
+    tag = soup.find('h2',class_="_14i3z6h")
+    tag = (tag.text.strip()).lower()
+
+    if "shared" in tag: 
+        place_type = "Shared Room"
+    elif "private" in tag:
+        place_type = "Private Room"
+    else:
+        place_type = "Entire Room"
+
+    room_info = soup.find('ol',class_="lgx66tx")
+    num_room = room_info.find_all('span')[5]
+    
+    if "studio" in num_room:
+        number = 1
+    else:
+        number = int(num_room.text.strip()[0])
+    
+
+    final_tuple = (pol_num, place_type, number)
+    
+    
+    
+    print(final_tuple)
+    return(final_tuple)
     pass
 
 
@@ -274,7 +317,7 @@ def extra_credit(listing_id):
 
 
 if __name__ == '__main__':
-    
+    get_listing_information('1944564')
     # database = get_detailed_listing_database("html_files/mission_district_search_results.html")
     # write_csv(database, "airbnb_dataset.csv")
     # check_policy_numbers(database)
