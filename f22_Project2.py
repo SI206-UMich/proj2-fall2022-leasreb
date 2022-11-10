@@ -94,14 +94,14 @@ def get_listing_information(listing_id):
 
     soup = BeautifulSoup(fileData, 'html.parser')
 
-    lst = soup.find('div',class_="_1k8vduze" )
-    pol_num = lst.find('span', class_="ll4r2nl")
+    lst = soup.find('li',class_="f19phm7j dir dir-ltr" )
+    pol_num = lst.find('span', class_="ll4r2nl dir dir-ltr")
     pol_num = pol_num.text.strip()
 
-    if pol_num == "exepmt":
+    if  "exempt" in pol_num.lower():
         pol_num = "Exempt"
     
-    if pol_num == "pending":
+    if "pending" in pol_num.lower() :
         pol_num = "Pending"
     
   
@@ -118,7 +118,7 @@ def get_listing_information(listing_id):
     room_info = soup.find('ol',class_="lgx66tx")
     num_room = room_info.find_all('span')[5]
     
-    if "studio" in num_room:
+    if "studio" in (num_room.text.strip()).lower():
         number = 1
     else:
         number = int(num_room.text.strip()[0])
@@ -127,8 +127,6 @@ def get_listing_information(listing_id):
     final_tuple = (pol_num, place_type, number)
     
     
-    
-    print(final_tuple)
     return(final_tuple)
     pass
 
@@ -147,6 +145,21 @@ def get_detailed_listing_database(html_file):
         ...
     ]
     """
+    tuples_list = get_listings_from_search_results(html_file)
+    new_list = []
+    print(tuples_list)
+    
+    for tup in tuples_list:
+        info_tup = get_listing_information(tup[2])
+        print(info_tup)
+      
+    
+    
+    
+    
+    
+    return(new_list)
+    
     pass
 
 
@@ -317,7 +330,8 @@ def extra_credit(listing_id):
 
 
 if __name__ == '__main__':
-    get_listing_information('1944564')
+    
+    get_detailed_listing_database('html_files/mission_district_search_results.html')
     # database = get_detailed_listing_database("html_files/mission_district_search_results.html")
     # write_csv(database, "airbnb_dataset.csv")
     # check_policy_numbers(database)
