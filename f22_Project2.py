@@ -182,6 +182,15 @@ def write_csv(data, filename):
 
     This function should not return anything.
     """
+    csv_list = [('Listing Title','Cost','Listing ID','Policy Number','Place Type','Number of Bedrooms')]
+    sorted_data = sorted(data,key = lambda x: x[1])
+    for tup in sorted_data:
+        csv_list.append(tup)
+    
+    with open(filename, 'w', newline="") as fileout:
+        writer = csv.writer(fileout)
+        writer.writerows(csv_list)
+    
     pass
 
 
@@ -328,8 +337,8 @@ def extra_credit(listing_id):
 
 if __name__ == '__main__':
     
-    get_detailed_listing_database('html_files/mission_district_search_results.html')
-    # database = get_detailed_listing_database("html_files/mission_district_search_results.html")
-    # write_csv(database, "airbnb_dataset.csv")
+    database = get_detailed_listing_database("html_files/mission_district_search_results.html")
+    print(database)
+    write_csv(database, "airbnb_dataset.csv")
     # check_policy_numbers(database)
     unittest.main(verbosity=2)
