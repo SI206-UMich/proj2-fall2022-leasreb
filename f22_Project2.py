@@ -147,15 +147,12 @@ def get_detailed_listing_database(html_file):
     """
     tuples_list = get_listings_from_search_results(html_file)
     new_list = []
-    print(tuples_list)
+    
     
     for tup in tuples_list:
         info_tup = get_listing_information(tup[2])
-        print(info_tup)
-      
-    
-    
-    
+        new_tup = (tup[0], tup[1], tup[2],info_tup[0],info_tup[1],info_tup[2])
+        new_list.append(new_tup)
     
     
     return(new_list)
