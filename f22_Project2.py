@@ -98,7 +98,7 @@ def get_listing_information(listing_id):
     pol_num = lst.find('span', class_="ll4r2nl dir dir-ltr")
     pol_num = pol_num.text.strip()
 
-    if  "exempt" in pol_num.lower():
+    if  "ostr" in pol_num.lower():
         pol_num = "Exempt"
     
     if "pending" in pol_num.lower() :
@@ -213,6 +213,18 @@ def check_policy_numbers(data):
     ]
 
     """
+    invalid_nums = []
+    for tup in data:
+        pol_num = tup[3]
+        if (pol_num == "Pending") or (pol_num == "Exempt"):
+            continue
+        elif (re.search('20[0-9]{2}\-00[0-9]{4}STR',pol_num)) or (re.search('STR-000[0-9]{4}',pol_num)):
+            continue
+        else:
+           invalid_nums.append(pol_num) 
+    
+    
+    return(invalid_nums)
     pass
 
 
@@ -338,7 +350,12 @@ def extra_credit(listing_id):
 if __name__ == '__main__':
     
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
+    print("database: \n")
     print(database)
+    print('\n')
     write_csv(database, "airbnb_dataset.csv")
-    # check_policy_numbers(database)
+    invalid_nums = check_policy_numbers(database)
+    
+    print("Invalid Policy Numbers: \n")
+    print(invalid_nums)
     unittest.main(verbosity=2)
