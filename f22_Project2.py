@@ -328,39 +328,38 @@ class TestCases(unittest.TestCase):
         # check that there are 21 lines in the csv
         self.assertEqual(len(csv_lines), 21)
         # check that the header row is correct
-
+        self.assertEqual(csv_lines[0], ['Listing Title', 'Cost', 'Listing ID', 'Policy Number', 'Place Type', 'Number of Bedrooms'])
         # check that the next row is Private room in Mission District,82,51027324,Pending,Private Room,1
-
+        self.assertEqual(csv_lines[1], ['Private room in Mission District', '82', '51027324', 'Pending', 'Private Room', '1'])
         # check that the last row is Apartment in Mission District,399,28668414,Pending,Entire Room,2
-
+        self.assertEqual(csv_lines[20], ['Apartment in Mission District', '399', '28668414', 'Pending', 'Entire Room', '2'])
         pass
 
-#     def test_check_policy_numbers(self):
-#         # call get_detailed_listing_database on "html_files/mission_district_search_results.html"
-#         # and save the result to a variable
-#         detailed_database = get_detailed_listing_database("html_files/mission_district_search_results.html")
-#         # call check_policy_numbers on the variable created above and save the result as a variable
-#         invalid_listings = check_policy_numbers(detailed_database)
-#         # check that the return value is a list
-#         self.assertEqual(type(invalid_listings), list)
-#         # check that there is exactly one element in the string
-
-#         # check that the element in the list is a string
-
-#         # check that the first element in the list is '16204265'
-#         pass
+    def test_check_policy_numbers(self):
+        # call get_detailed_listing_database on "html_files/mission_district_search_results.html"
+        # and save the result to a variable
+        detailed_database = get_detailed_listing_database("html_files/mission_district_search_results.html")
+        # call check_policy_numbers on the variable created above and save the result as a variable
+        invalid_listings = check_policy_numbers(detailed_database)
+        # check that the return value is a list
+        self.assertEqual(type(invalid_listings), list)
+        # check that there is exactly one element in the string
+        self.assertEqual(len(invalid_listings), 1)
+        # check that the element in the list is a string
+        self.assertEqual(type(invalid_listings[0]), str)
+        # check that the first element in the list is '1081184'
+        self.assertEqual(invalid_listings[0], '1081184')
+        pass
 
 
 if __name__ == '__main__':
-    
-    
+   
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
     print("database: \n")
     print(database)
     print('\n')
     write_csv(database, "airbnb_dataset.csv")
+  
     invalid_nums = check_policy_numbers(database)
-    
-    print("Invalid Policy Numbers: ")
-    print(invalid_nums)
+    print("Invalid Policy Numbers: " + str(invalid_nums) + '\n')
     unittest.main(verbosity=2)
